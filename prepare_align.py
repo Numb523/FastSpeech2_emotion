@@ -1,7 +1,7 @@
 import argparse
 
 from utils.tools import get_configs_of
-from preprocessor import ljspeech, aishell3, libritts
+from preprocessor import ljspeech, aishell3, libritts, emotions_en
 
 
 def main(config):
@@ -11,6 +11,9 @@ def main(config):
         aishell3.prepare_align(config)
     if "LibriTTS" in config["dataset"]:
         libritts.prepare_align(config)
+    if "Emotions-en" in config["dataset"]:
+        emotions_en.prepare_align(config)
+
 
 
 if __name__ == "__main__":
