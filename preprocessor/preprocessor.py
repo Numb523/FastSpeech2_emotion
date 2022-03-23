@@ -21,6 +21,7 @@ class Preprocessor:
         self.val_size = config["preprocessing"]["val_size"]
         self.sampling_rate = config["preprocessing"]["audio"]["sampling_rate"]
         self.hop_length = config["preprocessing"]["stft"]["hop_length"]
+        self.emo_dataset = config["emotional_dataset"]
 
         assert config["preprocessing"]["pitch"]["feature"] in [
             "phoneme_level",
@@ -63,7 +64,8 @@ class Preprocessor:
         energy_scaler = StandardScaler()
 
         # Compute pitch, energy, duration, and mel-spectrogram
-        speakers = {}
+        speakers, emotions, emotion_set = {}, {}, set()
+
         for i, speaker in enumerate(tqdm(os.listdir(self.in_dir))):
             speakers[speaker] = i
             for wav_name in os.listdir(os.path.join(self.in_dir, speaker)):
@@ -71,6 +73,8 @@ class Preprocessor:
                     continue
 
                 basename = wav_name.split(".")[0]
+                if self.emo_dataset:
+                    emotion_set.add(basename.split("-")[0])
                 tg_path = os.path.join(
                     self.out_dir, "TextGrid", speaker, "{}.TextGrid".format(basename)
                 )
@@ -88,6 +92,10 @@ class Preprocessor:
                     energy_scaler.partial_fit(energy.reshape((-1, 1)))
 
                 n_frames += n
+
+        if emotion_set is not None:
+            for i, e in enumerate(emotion_set):
+                emotions[e] = i
 
         print("Computing statistic quantities ...")
         # Perform normalization if necessary
@@ -115,6 +123,10 @@ class Preprocessor:
         # Save files
         with open(os.path.join(self.out_dir, "speakers.json"), "w") as f:
             f.write(json.dumps(speakers))
+
+        if emotions is not None:
+            with open(os.path.join(self.out_dir, "emotions.json"), "w") as f:
+                f.write(json.dumps(emotions))
 
         with open(os.path.join(self.out_dir, "stats.json"), "w") as f:
             stats = {

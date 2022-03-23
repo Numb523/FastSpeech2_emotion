@@ -1,7 +1,7 @@
 dataset: "AISHELL3"
 
 path:
-  corpus_path: "/home/ming/Data/AISHELL-3"
+  corpus_path: "D:/Project/AISHELL-3"
   lexicon_path: "lexicon/pinyin-lexicon-r.txt"
   raw_path: "./raw_data/AISHELL3"
   preprocessed_path: "./preprocessed_data/AISHELL3"
@@ -28,3 +28,5 @@ preprocessing:
   energy:
     feature: "phoneme_level" # support 'phoneme_level' or 'frame_level'
     normalization: True
+
+emotional_dataset: False
