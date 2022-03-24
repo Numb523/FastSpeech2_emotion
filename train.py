@@ -79,7 +79,8 @@ def main(args, configs):
                 batch = to_device(batch, device)
 
                 # Forward
-                output = model(*(batch[2:]))
+                with torch.no_grad():
+                    output = model(*(batch[2:]))
 
                 # Cal Loss
                 losses = Loss(batch, output)
@@ -87,6 +88,7 @@ def main(args, configs):
 
                 # Backward
                 total_loss = total_loss / grad_acc_step
+                total_loss.requires_grad_(True)
                 total_loss.backward()
                 if step % grad_acc_step == 0:
                     # Clipping gradients to avoid gradient explosion
@@ -172,6 +174,7 @@ def main(args, configs):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--restore_step", type=int, default=0)
+    parser.add_argument("--FineTune", type=bool, default=False)
     parser.add_argument(
         "--dataset",
         type=str,

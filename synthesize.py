@@ -131,6 +131,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--restore_step", type=int, required=True)
+    parser.add_argument("--FineTune", type=bool, default=False)
     parser.add_argument(
         "--mode",
         type=str,

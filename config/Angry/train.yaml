@@ -1,7 +1,7 @@
 path:
-  ckpt_path: "./output/ckpt/LibriTTS"
-  log_path: "./output/log/LibriTTS"
-  result_path: "./output/result/LibriTTS"
+  ckpt_path: "./output/ckpt/Angry"
+  log_path: "./output/log/Angry"
+  result_path: "./output/result/Angry"
 optimizer:
   batch_size: 16
   betas: [0.9, 0.98]

@@ -7,11 +7,20 @@ import numpy as np
 import hifigan
 from model import FastSpeech2, ScheduledOptim
 
-
 def get_model(args, configs, device, train=False):
     (preprocess_config, model_config, train_config) = configs
 
     model = FastSpeech2(preprocess_config, model_config).to(device)
+    if args.FineTune:
+        lang = preprocess_config["preprocessing"]["text"]["language"]
+        if lang == "zh":
+            ckpt_path = "./output/ckpt/AISHELL3/600000.pth.tar"
+        elif lang == "en":
+            ckpt_path = "./output/ckpt/LJSpeech/900000.pth.tar"
+        ckpt = torch.load(ckpt_path)
+        model.load_state_dict(ckpt["model"])
+        for para in model.encoder.parameters():
+            para.requires_grad = False
     if args.restore_step:
         ckpt_path = os.path.join(
             train_config["path"]["ckpt_path"],
